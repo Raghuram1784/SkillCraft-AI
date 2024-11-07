@@ -1,0 +1,29 @@
+// Frontend Development Roadmap
+digraph {
+	rankdir=LR
+	node [fillcolor="#E5F5FF" fontname=Arial fontsize=12 margin=0.2 shape=box style="rounded,filled"]
+	edge [color="#666666" fontname=Arial fontsize=10 penwidth=1.5]
+	subgraph cluster_0 {
+		color="#E0E0E0" label=Fundamentals style=rounded
+		html [label=HTML5]
+		css [label=CSS3]
+		js [label=JavaScript]
+		html -> css
+		css -> js
+	}
+	js -> react
+	js -> vue
+	js -> angular
+	subgraph cluster_1 {
+		color="#E0E0E0" label="Frontend Frameworks" style=rounded
+		react [label="React.js"]
+		vue [label="Vue.js"]
+		angular [label=Angular]
+	}
+	subgraph cluster_2 {
+		color="#E0E0E0" label="Build Tools" style=rounded
+		webpack [label=Webpack]
+		vite [label=Vite]
+		npm [label="npm/yarn"]
+	}
+}

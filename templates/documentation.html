@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ doc.title }} - SkillCraftAI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-tomorrow.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <div class="header animate-fade-in">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="SkillCraft AI Logo">
+            <span>SkillCraftAI</span>
+        </div>
+        <nav>
+            <a href="/" class="nav-link"><i class="fas fa-home"></i> Home</a>
+            <a href="/skills" class="nav-link"><i class="fas fa-graduation-cap"></i> Learn Skill</a>
+            <a href="/about" class="nav-link"><i class="fas fa-info-circle"></i> About</a>
+        </nav>
+    </div>
+
+    <!-- Documentation Content -->
+    <div class="documentation-container">
+        {% if error %}
+            <div class="error-message">{{ error }}</div>
+        {% else %}
+            <h1>{{ doc.title }}</h1>
+            
+            {% for section in doc.sections %}
+            <section class="doc-section">
+                <h2>{{ section.title }}</h2>
+                <div class="content">
+                    {% if section.content is defined %}
+                        {{ section.content|markdown|safe }}
+                    {% else %}
+                        {{ section.content|safe }}
+                    {% endif %}
+                </div>
+            </section>
+            {% endfor %}
+
+            <!-- Additional Resources -->
+            <section class="additional-resources">
+                <h2>Additional Resources</h2>
+                <div class="resource-links">
+                    {% for resource in doc.resources %}
+                    <a href="{{ resource.url }}" target="_blank" class="resource-link">
+                        <i class="fas fa-external-link-alt"></i>
+                        {{ resource.name }}
+                    </a>
+                    {% endfor %}
+                </div>
+            </section>
+        {% endif %}
+    </div>
+
+    <!-- Add Prism.js for syntax highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-html.min.js"></script>
+</body>
+</html> 

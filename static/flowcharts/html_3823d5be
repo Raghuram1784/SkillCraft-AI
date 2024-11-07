@@ -1,0 +1,10 @@
+// Learning Path for HTML
+digraph {
+	rankdir=LR
+	node [fillcolor=lightblue fontsize=12 shape=box style="rounded,filled"]
+	step_0 [label="HTML Basics"]
+	step_1 [label=Forms]
+	step_0 -> step_1
+	step_2 [label="CSS Basics"]
+	step_1 -> step_2
+}

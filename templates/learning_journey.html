@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning Journey</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="learning-container">
+        <!-- Progress Overview -->
+        <div class="progress-overview">
+            <div class="progress-circle" data-progress="0">
+                <div class="progress-circle-inner">
+                    <span class="progress-percentage">0%</span>
+                    <span class="progress-label">Complete</span>
+                </div>
+            </div>
+            <div class="progress-stats">
+                <div class="stat-item">
+                    <i class="fas fa-clock"></i>
+                    <span>Time Spent: <span id="timeSpent">0h</span></span>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-tasks"></i>
+                    <span>Steps Completed: <span id="stepsCompleted">0/4</span></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Skill Header -->
+        <div class="skill-header animate-in">
+            <h1>{{ skill.name }}</h1>
+            <div class="skill-details">
+                <span class="badge">{{ skill.Domain }}</span>
+                <span class="badge">{{ skill.Level }}</span>
+                <span class="badge">{{ skill['Duration (hours)'] }} hours</span>
+            </div>
+        </div>
+
+        <!-- Timeline Section -->
+        <div class="timeline-section animate-in">
+            <h2><i class="fas fa-calendar-alt"></i> Learning Schedule</h2>
+            <div class="timeline-cards">
+                <div class="timeline-card">
+                    <div class="card-icon"><i class="fas fa-play"></i></div>
+                    <h3>Start Date</h3>
+                    <p>{{ timeline.start_date }}</p>
+                </div>
+                <div class="timeline-card">
+                    <div class="card-icon"><i class="fas fa-flag-checkered"></i></div>
+                    <h3>End Date</h3>
+                    <p>{{ timeline.end_date }}</p>
+                </div>
+                <div class="timeline-card">
+                    <div class="card-icon"><i class="fas fa-hourglass-half"></i></div>
+                    <h3>Daily Goal</h3>
+                    <p>{{ timeline.hours_per_day }} hours</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Learning Path -->
+        <div class="learning-path animate-in">
+            <h2><i class="fas fa-road"></i> Learning Path</h2>
+            <div class="path-steps">
+                {% for step in skill['Learning Path'].split(' → ') %}
+                <div class="step-card" data-step="{{ loop.index }}">
+                    <div class="step-checkbox">
+                        <input type="checkbox" id="step{{ loop.index }}" class="step-check">
+                        <label for="step{{ loop.index }}"></label>
+                    </div>
+                    <div class="step-content">
+                        <h3>{{ step }}</h3>
+                        <div class="step-resources">
+                            <!-- First documentation button -->
+                            <button onclick="enableSecondaryDoc('{{ step }}')" class="resource-btn">
+                                <i class="fas fa-book"></i> Documentation
+                            </button>
+                            
+                            <!-- Secondary documentation button (initially hidden) -->
+                            <button onclick="showDocumentation('{{ step }}')" class="resource-btn secondary-doc" id="doc-btn-{{ step }}" style="display: none;">
+                                <i class="fas fa-external-link-alt"></i> Documentation
+                            </button>
+                            
+                            <!-- Updated Video Tutorials button -->
+                            <button onclick="openVideoTutorial('{{ step }}')" class="resource-btn">
+                                <i class="fas fa-video"></i> Video Tutorials
+                            </button>
+                            
+                            <a href="#" class="resource-link" onclick="showResources('{{ step }}')">
+                                <i class="fas fa-laptop-code"></i> Practice Projects
+                            </a>
+                        </div>
+                        <div class="step-progress">
+                            <div class="progress-bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Resume Button -->
+        <div class="resume-section">
+            <button id="saveProgress" class="btn-save">
+                <i class="fas fa-save"></i> Save Progress
+            </button>
+            <button id="resetProgress" class="btn-reset">
+                <i class="fas fa-undo"></i> Reset Progress
+            </button>
+        </div>
+
+        <!-- Add this: Success Toast -->
+        <div id="successToast" class="toast">
+            <div class="toast-content">
+                <i class="fas fa-check-circle"></i>
+                <span>Progress Saved Successfully!</span>
+            </div>
+        </div>
+
+        <!-- Add this: Reset Confirmation Modal -->
+        <div id="resetModal" class="modal">
+            <div class="modal-content reset-modal">
+                <div class="reset-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h2>Reset Progress</h2>
+                    <p>Are you sure you want to reset all progress? This action cannot be undone.</p>
+                    <div class="reset-buttons">
+                        <button id="confirmReset" class="btn-confirm">Yes, Reset</button>
+                        <button id="cancelReset" class="btn-cancel">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Replace the existing reminder section with this -->
+        <div class="reminder-section">
+            <button class="btn-reminder" id="reminderBtn">
+                <i class="fas fa-bell"></i>
+                Get Learning Reminders
+            </button>
+        </div>
+    </div>
+
+    <!-- Documentation Modal -->
+    <div id="documentationModal" class="modal">
+        <div class="modal-content documentation-modal">
+            <span class="close" onclick="closeDocumentationModal()">&times;</span>
+            <div id="documentationContent">
+                <!-- Documentation content will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Add this modal for practice projects -->
+    <div id="projectsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeProjectsModal()">&times;</span>
+            <div class="projects-wrapper">
+                <h2 class="projects-title"></h2>
+                <div class="projects-grid">
+                    <!-- Projects will be loaded here dynamically -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Progress Tracking
+        let progress = 0;
+        const steps = document.querySelectorAll('.step-check');
+        const progressCircle = document.querySelector('.progress-circle');
+        const progressPercentage = document.querySelector('.progress-percentage');
+        const stepsCompleted = document.getElementById('stepsCompleted');
+
+        function updateProgress() {
+            const completedSteps = document.querySelectorAll('.step-check:checked').length;
+            progress = (completedSteps / steps.length) * 100;
+            progressCircle.style.setProperty('--progress', progress);
+            progressPercentage.textContent = Math.round(progress) + '%';
+            stepsCompleted.textContent = `${completedSteps}/${steps.length}`;
+            
+            // Save to localStorage
+            saveProgress();
+        }
+
+        // Step Checkboxes
+        steps.forEach(step => {
+            step.addEventListener('change', updateProgress);
+        });
+
+        // Save/Resume Functionality
+        function saveProgress() {
+            const progressData = {
+                completedSteps: Array.from(steps).map(step => step.checked),
+                timeSpent: document.getElementById('timeSpent').textContent,
+                lastSaved: new Date().toISOString()
+            };
+            localStorage.setItem('learningProgress', JSON.stringify(progressData));
+            showToast(); // Show success toast only after saving
+        }
+
+        function loadProgress() {
+            const savedProgress = localStorage.getItem('learningProgress');
+            if (savedProgress) {
+                const data = JSON.parse(savedProgress);
+                data.completedSteps.forEach((checked, index) => {
+                    steps[index].checked = checked;
+                });
+                document.getElementById('timeSpent').textContent = data.timeSpent;
+                updateProgress();
+            }
+        }
+
+        // Resource Modal
+        function showResources(step) {
+            const modal = document.getElementById('resourceModal');
+            const resourceGrid = modal.querySelector('.resource-grid');
+            
+            resourceGrid.innerHTML = `
+                <div class="resource-card">
+                    <h3>Practice Projects</h3>
+                    <p>Hands-on projects for ${step}</p>
+                    <a href="#" class="btn-resource">Start Project</a>
+                </div>
+            `;
+            modal.style.display = 'block';
+        }
+
+        // Close Modal
+        document.querySelector('.close').onclick = function() {
+            document.getElementById('resourceModal').style.display = 'none';
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadProgress();
+            // Animation on scroll
+            const animateItems = document.querySelectorAll('.animate-in');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            });
+            animateItems.forEach(item => observer.observe(item));
+        });
+
+        function enableSecondaryDoc(step) {
+            // Show the secondary documentation button
+            const secondaryBtn = document.getElementById(`doc-btn-${step}`);
+            if (secondaryBtn) {
+                secondaryBtn.style.display = 'inline-block';
+            }
+        }
+
+        function showDocumentation(step) {
+            const modal = document.getElementById('documentationModal');
+            const content = document.getElementById('documentationContent');
+            
+            // Show loading state
+            content.innerHTML = '<div class="loading">Loading documentation...</div>';
+            modal.style.display = 'block';
+            
+            // Fetch documentation content
+            fetch(`/documentation/Frontend Development/${step}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        throw new Error(data.error);
+                    }
+                    
+                    content.innerHTML = `
+                        <div class="documentation-wrapper">
+                            <div class="documentation-header">
+                                <h2>${step} Documentation</h2>
+                                <button onclick="openConceptDocs()" class="official-docs-link">
+                                    <i class="fas fa-external-link-alt"></i> Official Documentation
+                                </button>
+                            </div>
+                            <div class="documentation-content">
+                                ${data.content}
+                            </div>
+                        </div>
+                    `;
+                })
+                .catch(error => {
+                    content.innerHTML = `
+                        <div class="error-message">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <p>${error.message}</p>
+                        </div>
+                    `;
+                });
+        }
+
+        // Close modal when clicking the close button or outside
+        window.onclick = function(event) {
+            const docModal = document.getElementById('documentationModal');
+            const projectsModal = document.getElementById('projectsModal');
+            
+            if (event.target == docModal) {
+                closeDocumentationModal();
+            }
+            if (event.target == projectsModal) {
+                closeProjectsModal();
+            }
+        }
+
+        function openConceptDocs() {
+            // Get the current concept from the documentation-header h2
+            const pageTitle = document.querySelector('.documentation-header h2').textContent;
+            
+            // Open the correct URL based on the concept
+            if (pageTitle.includes('HTML Documentation')) {
+                window.open('https://www.w3schools.com/html/default.asp', '_blank');
+            } 
+            else if (pageTitle.includes('CSS Documentation')) {
+                window.open('https://www.w3schools.com/css/default.asp', '_blank');
+            }
+            else if (pageTitle.includes('JavaScript Documentation')) {
+                window.open('https://www.w3schools.com/js/default.asp', '_blank');
+            }
+            else if (pageTitle.includes('Framework Documentation')) {
+                window.open('https://www.w3schools.com/react/', '_blank');
+            }
+        }
+
+        // Video tutorial URLs for each topic
+        const videoTutorials = {
+            'HTML': 'https://youtu.be/qz0aGYrrlhU?si=t-h8wAe9I40kICTr',
+            'CSS': 'https://youtu.be/OXGznpKZ_sA?si=Ukgj3RQtIRZ_Atr-',
+            'JavaScript': 'https://youtu.be/EerdGm-ehJQ?si=3olbNLf_3MK0l1MR',
+            'Framework': 'https://youtu.be/bMknfKXIFA8?si=cBroxRWrQKRQxGEB'
+        };
+
+        // Function to open video tutorial
+        function openVideoTutorial(topic) {
+            const videoUrl = videoTutorials[topic.trim()];
+            if (videoUrl) {
+                window.open(videoUrl, '_blank');
+            }
+        }
+
+        // Practice Projects Data
+        const practiceProjects = {
+            'HTML': [
+                {
+                    name: 'Personal Blog',
+                    description: 'Create a simple blog layout with header, articles, and sidebar',
+                    difficulty: 'Beginner',
+                    codepenLink: 'https://codepen.io/pen?template=html-blog',
+                    tags: ['Layout', 'Semantic HTML']
+                },
+                {
+                    name: 'Product Landing Page',
+                    description: 'Build a product showcase page with features and pricing sections',
+                    difficulty: 'Beginner',
+                    codepenLink: 'https://codepen.io/pen?template=html-product',
+                    tags: ['Forms', 'Tables']
+                },
+                {
+                    name: 'Portfolio Website',
+                    description: 'Create a multi-page portfolio with projects and contact form',
+                    difficulty: 'Intermediate',
+                    codepenLink: 'https://codepen.io/pen?template/html-portfolio',
+                    tags: ['Forms', 'Navigation']
+                },
+                {
+                    name: 'Restaurant Website',
+                    description: 'Design a complete restaurant website with menu and reservation system',
+                    difficulty: 'Intermediate',
+                    codepenLink: 'https://codepen.io/pen?template/html-restaurant',
+                    tags: ['Forms', 'Tables', 'Layout']
+                },
+                {
+                    name: 'E-commerce Product Page',
+                    description: 'Build a complex product page with image gallery and specifications',
+                    difficulty: 'Advanced',
+                    codepenLink: 'https://codepen.io/pen?template/html-ecommerce',
+                    tags: ['Complex Layout', 'Forms', 'Tables']
+                }
+            ],
+            'CSS': [
+                {
+                    name: 'Button Animations',
+                    description: 'Create a collection of animated buttons with hover effects',
+                    difficulty: 'Beginner',
+                    codepenLink: 'https://codepen.io/pen?template=css-buttons',
+                    tags: ['Animations', 'Hover Effects']
+                },
+                {
+                    name: 'Profile Cards',
+                    description: 'Design beautiful profile cards with hover animations',
+                    difficulty: 'Beginner',
+                    codepenLink: 'https://codepen.io/pen?template/css-cards',
+                    tags: ['Cards', 'Flexbox']
+                },
+                {
+                    name: 'Responsive Navigation',
+                    description: 'Build a responsive navbar with hamburger menu animation',
+                    difficulty: 'Intermediate',
+                    codepenLink: 'https://codepen.io/pen?template/css-nav',
+                    tags: ['Responsive', 'Animation']
+                },
+                {
+                    name: 'Image Gallery Grid',
+                    description: 'Create an interactive image gallery with filtering options',
+                    difficulty: 'Intermediate',
+                    codepenLink: 'https://codepen.io/pen?template/css-gallery',
+                    tags: ['Grid', 'Filters']
+                },
+                {
+                    name: '3D Card Flip',
+                    description: 'Implement advanced 3D card flip animations with perspective',
+                    difficulty: 'Advanced',
+                    codepenLink: 'https://codepen.io/pen?template/css-3d',
+                    tags: ['3D', 'Transform', 'Perspective']
+                }
+            ],
+            'JavaScript': [
+                {
+                    name: 'Interactive Quiz',
+                    description: 'Create a simple quiz with score tracking',
+                    difficulty: 'Beginner',
+                    codepenLink: 'https://codepen.io/pen?template/js-quiz',
+                    tags: ['DOM', 'Events']
+                },
+                {
+                    name: 'Todo List',
+                    description: 'Build a todo list with local storage',
+                    difficulty: 'Beginner',
+                    codepenLink: 'https://codepen.io/pen?template/js-todo',
+                    tags: ['CRUD', 'Local Storage']
+                },
+                {
+                    name: 'Memory Card Game',
+                    description: 'Create a memory matching card game with animations',
+                    difficulty: 'Intermediate',
+                    codepenLink: 'https://codepen.io/pen?template/js-memory',
+                    tags: ['Game Logic', 'Animations']
+                },
+                {
+                    name: 'Weather Dashboard',
+                    description: 'Build a weather app using API and async operations',
+                    difficulty: 'Intermediate',
+                    codepenLink: 'https://codepen.io/pen?template/js-weather',
+                    tags: ['API', 'Async/Await']
+                },
+                {
+                    name: 'Kanban Board',
+                    description: 'Create a drag-and-drop kanban board for task management',
+                    difficulty: 'Advanced',
+                    codepenLink: 'https://codepen.io/pen?template/js-kanban',
+                    tags: ['Drag & Drop', 'Complex State']
+                }
+            ],
+            'Framework': [
+                {
+                    name: 'Task Manager',
+                    description: 'Build a task management app with React components and state management',
+                    difficulty: 'Beginner',
+                    codepenLink: 'https://stackblitz.com/edit/react-task-manager-starter',
+                    tags: ['Components', 'State', 'Props']
+                },
+                {
+                    name: 'Social Media Dashboard',
+                    description: 'Create a responsive dashboard with dynamic data and theme switching',
+                    difficulty: 'Beginner',
+                    codepenLink: 'https://stackblitz.com/edit/react-dashboard-starter',
+                    tags: ['Hooks', 'Context', 'Routing']
+                },
+                {
+                    name: 'E-commerce Cart',
+                    description: 'Develop a shopping cart with Redux state management and animations',
+                    difficulty: 'Intermediate',
+                    codepenLink: 'https://stackblitz.com/edit/react-cart-redux-starter',
+                    tags: ['Redux', 'Effects', 'API Integration']
+                },
+                {
+                    name: 'Real-time Chat App',
+                    description: 'Build a chat application with Firebase integration and real-time updates',
+                    difficulty: 'Intermediate',
+                    codepenLink: 'https://stackblitz.com/edit/react-chat-firebase-starter',
+                    tags: ['Firebase', 'Real-time', 'Authentication']
+                },
+                {
+                    name: 'Project Management System',
+                    description: 'Create a full-featured project management tool with multiple views and data visualization',
+                    difficulty: 'Advanced',
+                    codepenLink: 'https://stackblitz.com/edit/react-project-management-starter',
+                    tags: ['Complex State', 'Charts', 'Performance']
+                }
+            ]
+        };
+
+        // Function to show projects modal
+        function showResources(topic) {
+            console.log("Opening modal for:", topic); // Debug log
+            const modal = document.getElementById('projectsModal');
+            if (!modal) {
+                console.error("Modal element not found!");
+                return;
+            }
+
+            const projectsGrid = modal.querySelector('.projects-grid');
+            const projectsTitle = modal.querySelector('.projects-title');
+            
+            projectsTitle.textContent = `${topic} Practice Projects`;
+            projectsGrid.innerHTML = ''; // Clear existing content
+            
+            const projects = practiceProjects[topic] || [];
+            
+            projects.forEach((project, index) => {
+                const isFramework = topic === 'Framework';
+                const buttonText = isFramework ? 'Open in StackBlitz' : 'Try on CodePen';
+                const buttonIcon = isFramework ? 'fas fa-code-branch' : 'fab fa-codepen';
+                
+                const projectCard = `
+                    <div class="project-card" style="animation: fadeInUp ${0.2 + index * 0.1}s ease-out">
+                        <div class="project-header">
+                            <h3>${project.name}</h3>
+                            <span class="difficulty-badge ${project.difficulty.toLowerCase()}">
+                                ${project.difficulty}
+                            </span>
+                        </div>
+                        <p>${project.description}</p>
+                        <div class="project-tags">
+                            ${project.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                        </div>
+                        <a href="${project.codepenLink}" target="_blank" class="codepen-btn">
+                            <i class="${buttonIcon}"></i> ${buttonText}
+                        </a>
+                    </div>
+                `;
+                projectsGrid.insertAdjacentHTML('beforeend', projectCard);
+            });
+            
+            modal.style.display = 'block';
+            modal.classList.add('modal-open');
+        }
+
+        // Function to close the modal
+        function closeProjectsModal() {
+            const modal = document.getElementById('projectsModal');
+            modal.classList.remove('modal-open');
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300);
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('projectsModal');
+            if (event.target == modal) {
+                closeProjectsModal();
+            }
+        }
+
+        // Add event listener for ESC key to close modal
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeProjectsModal();
+            }
+        });
+
+        // Add this function for closing documentation modal
+        function closeDocumentationModal() {
+            const modal = document.getElementById('documentationModal');
+            if (modal) {
+                modal.style.display = 'none';
+                // Clear the content when closing
+                const content = document.getElementById('documentationContent');
+                if (content) {
+                    content.innerHTML = '';
+                }
+            }
+        }
+
+        // Event listener for clicking outside the modal
+        window.onclick = function(event) {
+            const docModal = document.getElementById('documentationModal');
+            const projectsModal = document.getElementById('projectsModal');
+            
+            if (event.target === docModal) {
+                closeDocumentationModal();
+            }
+            if (event.target === projectsModal) {
+                closeProjectsModal();
+            }
+        }
+
+        // Event listener for ESC key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeDocumentationModal();
+                closeProjectsModal();
+            }
+        });
+
+        // Make sure all close buttons work
+        document.querySelectorAll('.close').forEach(button => {
+            button.addEventListener('click', function() {
+                const modal = this.closest('.modal');
+                if (modal.id === 'documentationModal') {
+                    closeDocumentationModal();
+                } else if (modal.id === 'projectsModal') {
+                    closeProjectsModal();
+                }
+            });
+        });
+
+        // Add these functions after your existing script
+        function showToast() {
+            const toast = document.getElementById('successToast');
+            toast.style.visibility = 'visible'; // Make visible first
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 100); // Small delay to ensure visibility is set first
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    toast.style.visibility = 'hidden';
+                }, 500); // Hide after animation completes
+            }, 3000);
+        }
+
+        // Add reset functionality
+        document.getElementById('resetProgress').addEventListener('click', () => {
+            const resetModal = document.getElementById('resetModal');
+            resetModal.style.display = 'block';
+        });
+
+        document.getElementById('confirmReset').addEventListener('click', () => {
+            // Reset all checkboxes
+            steps.forEach(step => step.checked = false);
+            
+            // Reset progress circle and text
+            progress = 0;
+            progressCircle.style.setProperty('--progress', 0);
+            progressPercentage.textContent = '0%';
+            stepsCompleted.textContent = `0/${steps.length}`;
+            
+            // Clear localStorage
+            localStorage.removeItem('learningProgress');
+            
+            // Close modal with fade out animation
+            const resetModal = document.getElementById('resetModal');
+            resetModal.style.opacity = '0';
+            setTimeout(() => {
+                resetModal.style.display = 'none';
+                resetModal.style.opacity = '1';
+            }, 300);
+        });
+
+        document.getElementById('cancelReset').addEventListener('click', () => {
+            const resetModal = document.getElementById('resetModal');
+            resetModal.style.display = 'none';
+        });
+
+        // Close reset modal when clicking outside
+        window.onclick = function(event) {
+            const resetModal = document.getElementById('resetModal');
+            const docModal = document.getElementById('documentationModal');
+            const projectsModal = document.getElementById('projectsModal');
+            
+            if (event.target == resetModal) {
+                resetModal.style.display = 'none';
+            }
+            if (event.target == docModal) {
+                closeDocumentationModal();
+            }
+            if (event.target == projectsModal) {
+                closeProjectsModal();
+            }
+        }
+
+        // Add click event listener for save button
+        document.getElementById('saveProgress').addEventListener('click', saveProgress);
+
+        // Replace the existing reminder JavaScript with this
+        document.getElementById('reminderBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            const subject = encodeURIComponent('Learning Journey Subscription');
+            const body = encodeURIComponent(`Hi SkillCraft AI Team,
+
+I would like to receive reminders for this learning journey. I discovered your platform, which offers structured learning paths and personalized guidance for various tech skills. I'm interested in staying connected and receiving updates about my learning progress.
+
+Looking forward to this learning journey with SkillCraft AI.
+
+Best regards`);
+            
+            window.location.href = `mailto:aiskillcraft@gmail.com?subject=${subject}&body=${body}`;
+        });
+
+        // Add these CSS classes for better animations
+        const styleSheet = document.createElement('style');
+        styleSheet.textContent = `
+            .animate-toast {
+                animation: slideIn 0.5s ease-out;
+            }
+
+            .modal-fade-out {
+                animation: fadeOut 0.3s ease-out;
+            }
+
+            .toast-content {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .toast-message h4 {
+                margin: 0;
+                font-size: 16px;
+                font-weight: 600;
+            }
+
+            .toast-message p {
+                margin: 4px 0 0;
+                font-size: 14px;
+                opacity: 0.9;
+            }
+
+            .toast-content.error {
+                background: linear-gradient(135deg, #ff4444, #cc0000);
+            }
+
+            @keyframes slideIn {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+
+            @keyframes fadeOut {
+                from {
+                    opacity: 1;
+                }
+                to {
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(styleSheet);
+    </script>
+</body>
+</html> 

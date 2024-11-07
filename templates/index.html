@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Learning Pathways</title>
+</head>
+<body>
+    <!-- Existing logic can go here -->
+    
+    <h1>Available Courses</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Course</th>
+                <th>Level</th>
+                <th>Module</th>
+                <th>Duration</th>
+                <th>Difficulty</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for course in courses %}
+            <tr>
+                <td>{{ course.Course_Learning_Material }}</td>
+                <td>{{ course.Course_Level }}</td>
+                <td>{{ course.Module }}</td>
+                <td>{{ course.Duration }}</td>
+                <td>{{ course.Difficulty_Level }}</td>
+                <td>
+                    <a href="{{ course.Links }}" target="_blank">
+                        <button>Start Learning</button>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Existing logic can go here -->
+</body>
+</html>

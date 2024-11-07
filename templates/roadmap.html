@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roadmap for {{ skill['Skill Name'] }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="roadmap-container">
+        <h1>Roadmap for {{ skill['Skill Name'] }}</h1>
+        <p><strong>Domain:</strong> {{ skill['Domain'] }}</p>
+        <p><strong>Level:</strong> {{ skill['Level'] }}</p>
+        
+        <!-- Learning Path Section -->
+        <div class="learning-path-section">
+            <h2>Learning Path Steps:</h2>
+            <ul class="learning-steps">
+                {% for step in skill['Learning Path'].split(' → ') %}
+                <li>{{ step }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        
+        <!-- Flowchart Section -->
+        {% if flowchart_path %}
+        <div class="flowchart-section">
+            <h2>Learning Path Visualization</h2>
+            <div class="flowchart-controls">
+                <button class="zoom-button" onclick="zoomIn()">Zoom In</button>
+                <button class="zoom-button" onclick="zoomOut()">Zoom Out</button>
+                <button class="zoom-button" onclick="resetZoom()">Reset</button>
+            </div>
+            <div class="flowchart-container">
+                <img src="{{ url_for('static', filename='flowcharts/' + flowchart_path) }}" 
+                     alt="Learning Path Flowchart"
+                     class="flowchart-image"
+                     id="flowchart">
+            </div>
+        </div>
+        {% endif %}
+        
+        <p><strong>Duration:</strong> {{ skill['Duration (hours)'] }} hours</p>
+        <button id="start-learning-btn" class="start-btn">Start Learning</button>
+    </div>
+
+    <script>
+        let scale = 1;
+        const flowchart = document.getElementById('flowchart');
+        
+        function zoomIn() {
+            scale *= 1.2;
+            flowchart.style.transform = `scale(${scale})`;
+        }
+        
+        function zoomOut() {
+            scale *= 0.8;
+            flowchart.style.transform = `scale(${scale})`;
+        }
+        
+        function resetZoom() {
+            scale = 1;
+            flowchart.style.transform = `scale(${scale})`;
+        }
+
+        document.getElementById('start-learning-btn').addEventListener('click', function() {
+            window.location.href = "/start-learning/{{ skill['Skill Name'] }}";
+        });
+    </script>
+</body>
+</html>

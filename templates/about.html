@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Skill Learning Assistant</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Particles.js Container -->
+    <div id="particles-js"></div>
+
+    <div class="header">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='images/brain-logo.png') }}" alt="SkillCraft AI Logo">
+            <span>SkillCraft AI</span>
+        </div>
+        <nav>
+            <a href="/" class="nav-link"><i class="fas fa-home"></i> Home</a>
+            <a href="/skills" class="nav-link"><i class="fas fa-graduation-cap"></i> Learn Skill</a>
+            <a href="/about" class="nav-link"><i class="fas fa-info-circle"></i> About</a>
+        </nav>
+    </div>
+
+    <div class="main-container">
+        <div class="content-card">
+            <!-- Hero Section -->
+            <div class="hero-section" data-aos="fade-down">
+                <h1 class="glowing-text">Welcome to Skill Learning Assistant</h1>
+                <p class="hero-subtitle">Empowering learners through innovative technology</p>
+            
+                <div class="mission-section" data-aos="fade-up">
+                    <div class="section-icon">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <h2>Our Mission</h2>
+                    <p>Creating a comprehensive and user-friendly learning environment that helps users effectively master new skills through structured roadmaps and timely reminders.</p>
+                </div>
+            </div>
+
+            <!-- Features Grid -->
+            <div class="features-grid">
+                <div class="feature-card" data-aos="flip-left" data-aos-delay="100">
+                    <i class="fas fa-map-marked-alt"></i>
+                    <h3>Detailed Roadmaps</h3>
+                    <p>Step-by-step guidance ensuring a structured learning journey</p>
+                </div>
+
+                <div class="feature-card" data-aos="flip-left" data-aos-delay="200">
+                    <i class="fas fa-bell"></i>
+                    <h3>Smart Reminders</h3>
+                    <p>Stay on track with customized learning schedules</p>
+                </div>
+
+                <div class="feature-card" data-aos="flip-left" data-aos-delay="300">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Progress Tracking</h3>
+                    <p>Monitor your learning milestones and achievements</p>
+                </div>
+
+                <div class="feature-card" data-aos="flip-left" data-aos-delay="400">
+                    <i class="fas fa-book-reader"></i>
+                    <h3>Curated Resources</h3>
+                    <p>Access hand-picked materials for enhanced learning</p>
+                </div>
+            </div>
+
+            <!-- Team Section -->
+            <div class="team-section" data-aos="fade-up">
+                <div class="section-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h2>Our Team</h2>
+                <p>We are a passionate team of educators, developers, and designers committed to enhancing the learning experience.</p>
+            </div>
+
+            <!-- Contact Section -->
+            <div class="contact-section" data-aos="fade-up">
+                <div class="section-icon">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <h2>Get in Touch</h2>
+                <p>Have questions or suggestions? We'd love to hear from you!</p>
+                <a href="mailto:aiskillcraft@gmail.com" class="contact-btn">
+                    <i class="fas fa-paper-plane"></i>
+                    Contact Us
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2024 Skill Learning Assistant. All Rights Reserved.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        AOS.init({
+            duration: 1000,
+            once: true
+        });
+
+        // Initialize Particles.js with enhanced configuration
+        particlesJS('particles-js', {
+            particles: {
+                number: {
+                    value: 80,
+                    density: {
+                        enable: true,
+                        value_area: 800
+                    }
+                },
+                color: {
+                    value: '#64ffda'
+                },
+                shape: {
+                    type: 'circle'
+                },
+                opacity: {
+                    value: 0.5,
+                    random: true,
+                    animation: {
+                        enable: true,
+                        speed: 1,
+                        minimumValue: 0.1,
+                        sync: false
+                    }
+                },
+                size: {
+                    value: 3,
+                    random: true
+                },
+                line_linked: {
+                    enable: true,
+                    distance: 150,
+                    color: '#64ffda',
+                    opacity: 0.4,
+                    width: 1
+                },
+                move: {
+                    enable: true,
+                    speed: 6,
+                    direction: 'none',
+                    random: false,
+                    straight: false,
+                    outMode: 'out',
+                    bounce: false,
+                }
+            },
+            interactivity: {
+                detect_on: 'canvas',
+                events: {
+                    onhover: {
+                        enable: true,
+                        mode: 'repulse'
+                    },
+                    onclick: {
+                        enable: true,
+                        mode: 'push'
+                    },
+                    resize: true
+                }
+            },
+            retina_detect: true
+        });
+    </script>
+</body>
+</html>

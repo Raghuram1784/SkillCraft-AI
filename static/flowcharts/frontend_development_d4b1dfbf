@@ -1,0 +1,49 @@
+// Frontend Development Learning Path
+digraph {
+	rankdir=LR
+	graph [nodesep=0.5 pad=0.5 ranksep=0.5 splines=ortho]
+	node [fontname=Arial fontsize=10 height=0.4 shape=box style="rounded,filled" width=1.2]
+	edge [arrowsize=0.8 color="#666666" fontname=Arial fontsize=10]
+	start [label="Start Learning
+Frontend" fillcolor="#E5F5FF" shape=oval]
+	subgraph cluster_0 {
+		color="#CCCCCC" label="Basic Concepts" style=rounded
+		html [label="Learn HTML" fillcolor="#FFE5E5"]
+		css [label="Learn CSS" fillcolor="#FFE5E5"]
+		js [label="Learn JavaScript" fillcolor="#FFE5E5"]
+	}
+	framework_decision [label="Choose
+Framework" fillcolor="#FFFFE5" shape=diamond]
+	subgraph cluster_1 {
+		color="#CCCCCC" label=Frameworks style=rounded
+		react [label=React fillcolor="#E5F5FF"]
+		vue [label="Vue.js" fillcolor="#E5F5FF"]
+		angular [label=Angular fillcolor="#E5F5FF"]
+	}
+	subgraph cluster_2 {
+		color="#CCCCCC" label="Advanced Topics" style=rounded
+		typescript [label=TypeScript fillcolor="#E5FFE5"]
+		testing [label=Testing fillcolor="#E5FFE5"]
+		state [label="State Management" fillcolor="#E5FFE5"]
+	}
+	subgraph cluster_3 {
+		color="#CCCCCC" label="Development Tools" style=rounded
+		webpack [label="Build Tools" fillcolor="#FFE5FF"]
+		git [label="Version Control" fillcolor="#FFE5FF"]
+	}
+	end [label="Frontend
+Developer" fillcolor="#E5F5FF" shape=oval]
+	start -> html
+	html -> css
+	css -> js
+	js -> framework_decision
+	framework_decision -> react [label=Popular]
+	framework_decision -> vue [label=Simple]
+	framework_decision -> angular [label=Enterprise]
+	react -> typescript
+	typescript -> testing
+	testing -> state
+	state -> webpack
+	webpack -> git
+	git -> end
+}
