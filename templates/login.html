@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - SkillCraft AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1a1a1a; /* Dark background */
+            color: #fff; /* White text */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            animation: fadeIn 1s; /* Animation for fade-in effect */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.1); /* Glassy effect */
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            width: 90%;
+            max-width: 400px; /* Responsive max width */
+            padding: 30px;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s; /* Transition effects */
+        }
+
+        .login-container:hover {
+            transform: translateY(-10px); /* Move up on hover */
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7); /* Enhanced shadow on hover */
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #64ffda; /* Light color for the heading */
+        }
+
+        .input-container {
+            position: relative;
+            width: 100%;
+            margin-bottom: 15px; /* Space between inputs */
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 40px; /* Add padding for icons */
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.2); /* Light input fields with transparency */
+            color: #fff; /* White text in input fields */
+            transition: border-color 0.3s; /* Animation for border color */
+            box-sizing: border-box; /* Ensure padding is included in width */
+        }
+
+        input::placeholder {
+            color: #aaa; /* Placeholder color */
+        }
+
+        input:focus {
+            border-color: #64ffda; /* Change border color on focus */
+            outline: none; /* Remove outline */
+        }
+
+        .icon {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #aaa;
+        }
+
+        .icon.email {
+            left: 10px;
+        }
+
+        .icon.password {
+            right: 10px;
+            cursor: pointer;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #64ffda; /* Light button color */
+            border: none;
+            border-radius: 5px;
+            color: #000; /* Black text */
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s; /* Animation for background color */
+        }
+
+        button:hover {
+            background-color: #52e1c3; /* Darker button color on hover */
+        }
+
+        p {
+            margin-top: 15px;
+        }
+
+        a {
+            color: #ffcc00; /* Change link color to a bright yellow */
+            text-decoration: none; /* Remove underline */
+            transition: color 0.3s; /* Smooth transition for color change */
+        }
+
+        a:hover {
+            color: #64ffda; /* Change color on hover for better visibility */
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>Login to SkillCraft AI</h2>
+        <form id="loginForm" method="POST" action="/login">
+            <div class="input-container">
+                <i class="fas fa-envelope icon email"></i>
+                <input type="email" name="email" placeholder="Email" required>
+            </div>
+            <div class="input-container">
+                <i class="fas fa-eye icon password" id="togglePassword" onclick="togglePassword()"></i>
+                <input type="password" name="password" id="password" placeholder="Password" required>
+            </div>
+            <button type="submit">Login</button>
+        </form>
+        <p>Don't have an account? <a href="/register">Sign up</a></p>
+    </div>
+
+    <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.getElementById('togglePassword');
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
+        }
+    </script>
+    
+</body>
+</html> 

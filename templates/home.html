@@ -7,6 +7,53 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <!-- Add Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">  
+    <style>
+        /* Add any additional styles here if needed */
+        body {
+            background-color: #121212; /* Dark background */
+            color: white; /* Light text color */
+        }
+
+        .header {
+            background-color: #1e1e1e; /* Slightly lighter background for the header */
+            padding: 10px 20px; /* Add padding */
+        }
+
+        .button {
+            background-color: transparent; /* No white background */
+            border: 1px solid #007bff; /* Blue border */
+            color: #007bff; /* Blue text */
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 5px; /* Rounded corners */
+        }
+
+        .button:hover {
+            background-color: #007bff; /* Blue background on hover */
+            color: white; /* White text on hover */
+        }
+
+        .profile-icon {
+            display: none; /* Initially hidden */
+            width: 40px; /* Increased size */
+            height: 40px; /* Increased size */
+            border-radius: 50%; /* Make it circular */
+            border: 2px solid #007bff; /* Blue border around the profile icon */
+            background-color: white; /* White background behind the image */
+            margin-left: 10px; /* Space between the icon and other elements */
+            padding: 5px; /* Padding to create space for the border */
+            cursor: pointer; /* Change cursor to pointer */
+        }
+
+        .logout-btn {
+            display: none; /* Initially hidden */
+            margin-left: 10px; /* Space between the icon and button */
+        }
+    </style>
 </head>
 <body>
     <!-- Particles.js Container -->
@@ -22,6 +69,10 @@
             <a href="/" class="nav-link"><i class="fas fa-home"></i> Home</a>
             <a href="/skills" class="nav-link"><i class="fas fa-graduation-cap"></i> Learn Skill</a>
             <a href="/about" class="nav-link"><i class="fas fa-info-circle"></i> About</a>
+            <a href="/login" class="nav-link button" id="loginBtn">Login</a>
+            <a href="/register" class="nav-link button" id="registerBtn">Sign Up</a>
+            <img src="{{ url_for('static', filename='images/profile.png') }}" alt="Profile" class="profile-icon" id="profileIcon" onclick="toggleLogout()">
+            <button class="logout-btn button" id="logoutBtn" onclick="logout()">Logout</button>
         </nav>
     </div>
 
@@ -111,6 +162,43 @@
             <p>&copy; 2024 SkillCraftAI. All rights reserved.</p>
         </div>
     </footer>
+
+    <script>
+        // Function to simulate login or registration
+        function onLoginOrRegister() {
+            // Hide login and register buttons
+            document.getElementById('loginBtn').style.display = 'none';
+            document.getElementById('registerBtn').style.display = 'none';
+            // Show profile icon
+            document.getElementById('profileIcon').style.display = 'inline-block';
+        }
+
+        // Function to toggle logout button visibility
+        function toggleLogout() {
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn.style.display === 'none' || logoutBtn.style.display === '') {
+                logoutBtn.style.display = 'inline-block'; // Show logout button
+            } else {
+                logoutBtn.style.display = 'none'; // Hide logout button
+            }
+        }
+
+        // Function to handle logout
+        function logout() {
+            // Hide profile icon and logout button
+            document.getElementById('profileIcon').style.display = 'none';
+            document.getElementById('logoutBtn').style.display = 'none';
+            // Show login and register buttons
+            document.getElementById('loginBtn').style.display = 'inline-block';
+            document.getElementById('registerBtn').style.display = 'inline-block';
+            // Redirect to login page
+            window.location.href = '/login'; // Redirect to login page
+        }
+
+        // Call this function when the user successfully logs in or registers
+        // For demonstration, we'll call it after 2 seconds
+        setTimeout(onLoginOrRegister, 2000); // Simulate login after 2 seconds
+    </script>
 
     <!-- Add JavaScript for animations -->
     <script>

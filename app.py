@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, redirect, session
 import networkx as nx
 import matplotlib
 matplotlib.use('Agg')
@@ -13,8 +13,67 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from flask_mail import Mail, Message  # Add at top with other imports if not already there
+from flask import Flask, render_template, request, redirect, flash
+# from flask_mysqldb import MySQL
+# import requests
+
+# app = Flask(__name__)
+# app.secret_key = 'your_secret_key'
+
+# # MySQL Configuration
+# app.config['MYSQL_HOST'] = 'localhost'
+# app.config['MYSQL_USER'] = 'root'
+# app.config['MYSQL_PASSWORD'] = 'root'
+# app.config['MYSQL_DB'] = 'user_registration'
+
+# mysql = MySQL(app)
+
+# def send_email_to_admin(name, email):
+#     url = "http://localhost:3001/send-email"  # Node.js email service
+#     data = {"name": name, "email": email}
+#     try:
+#         response = requests.post(url, json=data)
+#         if response.status_code == 200:
+#             print("Email sent successfully!")
+#         else:
+#             print("Failed to send email:", response.text)
+#     except Exception as e:
+#         print("Error:", e)
+
+# @app.route('/register', methods=['GET', 'POST'])
+# def register():
+#     if request.method == 'POST':
+#         name = request.form['full_name']
+#         email = request.form['email']
+#         password = request.form['password']
+
+#         # Insert user data into MySQL
+#         cur = mysql.connection.cursor()
+#         cur.execute("INSERT INTO users (full_name, email, password) VALUES (%s, %s, %s)", (name, email, password))
+#         mysql.connection.commit()
+#         cur.close()
+
+#         # Send email notification to admin
+#         send_email_to_admin(name, email)
+
+#         flash('Registration successful!', 'success')
+#         return redirect('/home')  # Redirect after registration
+
+#     return render_template('register.html')
+
+# @app.route('/home')
+# def home():
+#     return render_template('home.html')
+
+# if __name__ == '__main__':
+#     app.run(debug=True)
+
+
+
+
 
 app = Flask(__name__)
+app.secret_key = 'your_secret_key'  # Set a secret key for session management
 
 # Initialize Mail after creating Flask app
 mail = Mail(app)
@@ -24,7 +83,8 @@ app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USERNAME'] = 'aiskillcraft@gmail.com'
-app.config['MAIL_PASSWORD'] = 'wgkt scvh ybhm bzdw'  # Your new App Password
+app.config['MAIL_PASSWORD'] = 'mzcm fscn hawx dzhm'  # Your new App Password
+app.config['MAIL_DEFAULT_SENDER'] = 'aiskillcraft@gmail.com'
 
 # Skills data
 skills_data = pd.DataFrame({
@@ -104,7 +164,24 @@ skills_data['Formatted Duration'] = skills_data['Duration (hours)'].apply(format
 # Add routes for all pages
 @app.route('/')
 def home():
-    return render_template('home.html')
+    if 'logged_in' in session:
+        return render_template('home.html')  # Render your existing home page if logged in
+    return redirect('/login')  # Redirect to login if not logged in
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        # Here you would typically check the email and password against a database
+        session['logged_in'] = True  # Set the session variable
+        return redirect('/profile')  # Redirect to profile page after logging in
+    return render_template('login.html')  # Render the login page for GET requests
+
+@app.route('/logout')
+def logout():
+    session.pop('logged_in', None)  # Remove the session variable
+    return redirect('/login')  # Redirect to login after logout
 
 @app.route('/about')
 def about():
@@ -3003,5 +3080,19 @@ def send_reminder_emails():
         print(f"Email Error: {str(e)}")  # For debugging
         return jsonify({"success": False, "error": str(e)}), 500
 
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        # Handle registration logic here
+        session['logged_in'] = True  # Set the session variable
+        return redirect('/profile')  # Redirect to profile page after registration
+    return render_template('register.html')  # Render the registration page for GET requests
+
+@app.route('/profile')
+def profile():
+    if 'logged_in' not in session:  # Check if user is logged in
+        return redirect('/')  # Redirect to home if not logged in
+    return render_template('home.html')  # Render the profile page
+
 if __name__ == '__main__':
-    app.run(debug=True, port=5001)
+    app.run(debug=True, port=5000)
