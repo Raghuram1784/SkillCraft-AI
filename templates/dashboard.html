@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Progress Dashboard</title>
+    <title>Skill Learning Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" />
     <style>
         body {
-            background-color: #121212;
-            color: white;
+            background-color: #f4f4f4;
+            color: #333;
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 20px;
@@ -18,105 +19,155 @@
             margin: 20px 0;
         }
         .card {
-            background-color: #1e1e1e;
+            background-color: #fff;
             border-radius: 10px;
             padding: 20px;
-            margin: 20px auto; /* Center the card */
-            max-width: 600px; /* Set a maximum width */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s, box-shadow 0.3s;
+            margin: 20px 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-        }
-        canvas {
-            max-width: 100%; /* Ensure the chart is responsive */
-            height: auto; /* Maintain aspect ratio */
-        }
-        .skills {
+        .statistics {
             display: flex;
             justify-content: space-around;
             flex-wrap: wrap;
         }
-        .skill {
+        .stat-card {
             background-color: #007bff;
-            border-radius: 5px;
-            padding: 15px;
+            color: white;
+            border-radius: 10px;
+            padding: 20px;
+            flex: 1 1 30%;
             margin: 10px;
-            flex: 1 1 30%; /* Flex-grow, flex-shrink, flex-basis */
             text-align: center;
-            transition: background-color 0.3s, transform 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px; /* Increased font size */
         }
-        .skill:hover {
-            background-color: #0056b3;
-            transform: scale(1.05);
+        .stat-card h3 {
+            margin: 0;
         }
-        .skill i {
-            font-size: 24px; /* Set icon size */
-            margin-right: 5px; /* Space between icon and text */
+        .calendar {
+            margin-top: 20px;
+            max-width: 800px; /* Adjusted width */
+            margin-left: auto;
+            margin-right: auto;
         }
-        .statistics, .recent-activities, .notifications {
+        .notice-board {
             margin-top: 20px;
         }
         .notification {
-            background-color: #333;
+            background-color: #e9ecef;
             padding: 10px;
             border-radius: 5px;
             margin: 5px 0;
         }
         h2 {
-            font-size: 24px; /* Increased title font size */
-            margin-bottom: 15px; /* Space below title */
+            font-size: 24px;
+            margin-bottom: 15px;
         }
         ul {
-            list-style-type: none; /* Remove bullet points */
-            padding: 0; /* Remove padding */
+            list-style-type: none;
+            padding: 0;
         }
         li {
-            background-color: #2a2a2a; /* Background for list items */
+            background-color: #f8f9fa;
             padding: 10px;
             border-radius: 5px;
             margin: 5px 0;
-            transition: background-color 0.3s;
         }
-        li:hover {
-            background-color: #3a3a3a; /* Darker background on hover */
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding-top: 60px;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 400px;
+            border-radius: 10px; /* Rounded corners */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow effect */
+        }
+        .modal-content h2 {
+            margin: 0 0 15px; /* Margin for title */
+            font-size: 24px; /* Title font size */
+            color: #333; /* Title color */
+            text-align: center; /* Center title */
+        }
+        .modal-content label {
+            display: block; /* Block display for label */
+            margin-bottom: 5px; /* Space below label */
+            font-weight: bold; /* Bold label */
+        }
+        .modal-content input[type="text"] {
+            width: 95%; /* Full width */
+            padding: 10px; /* Padding inside input */
+            border: 1px solid #ccc; /* Border color */
+            border-radius: 5px; /* Rounded corners */
+            margin-bottom: 15px; /* Space below input */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Shadow effect */
+            transition: border-color 0.3s; /* Transition effect */
+        }
+        .modal-content input[type="text"]:focus {
+            border-color: #007bff; /* Change border color on focus */
+            outline: none; /* Remove outline */
+        }
+        .modal-content button {
+            background-color: #007bff; /* Button color */
+            color: white; /* Button text color */
+            border: none; /* No border */
+            padding: 10px 15px; /* Padding inside button */
+            border-radius: 5px; /* Rounded corners */
+            cursor: pointer; /* Pointer cursor */
+            transition: background-color 0.3s; /* Transition effect */
+            width: 100%; /* Full width */
+        }
+        .modal-content button:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>Your Progress Dashboard</h1>
+        <h1>Skill Learning Dashboard</h1>
     </div>
 
-    <div class="card">
-        <h2>Progress Overview</h2>
-        <canvas id="progressChart" width="400" height="200"></canvas>
-        <canvas id="skillDistributionChart" width="400" height="200"></canvas>
-    </div>
-
-    <div class="card">
-        <h2>Your Skills</h2>
-        <div class="skills">
-            <div class="skill"><i class="fab fa-python"></i> Python</div>
-            <div class="skill"><i class="fab fa-js"></i> JavaScript</div>
-            <div class="skill"><i class="fas fa-robot"></i> Machine Learning</div>
-            <div class="skill"><i class="fas fa-chart-line"></i> Data Analysis</div>
-            <div class="skill"><i class="fas fa-code"></i> Web Development</div>
-            <div class="skill"><i class="fas fa-brain"></i> AI Fundamentals</div>
+    <div class="statistics">
+        <div class="stat-card">
+            <h3>Total Skills</h3>
+            <p>0</p>
+        </div>
+        <div class="stat-card">
+            <h3>Total Courses</h3>
+            <p>0</p>
+        </div>
+        <div class="stat-card">
+            <h3>Current Streak</h3>
+            <p>0 days</p>
         </div>
     </div>
 
-    <div class="card statistics">
-        <h2>User Statistics</h2>
-        <p>Total Skills Learned: <strong>5</strong></p>
-        <p>Current Streak: <strong>3 days</strong></p>
-        <p>Next Skill to Learn: <strong>Data Visualization</strong></p>
+    <div class="calendar">
+        <h2>Calendar</h2>
+        <div id="calendar"></div>
     </div>
 
     <div class="card recent-activities">
@@ -128,105 +179,93 @@
         </ul>
     </div>
 
-    <div class="card notifications">
-        <h2>Notifications</h2>
+    <div class="card notice-board">
+        <h2>Notice Board</h2>
         <div class="notification">New course available: Advanced JavaScript!</div>
         <div class="notification">Reminder: Complete your Data Analysis project by Friday.</div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Modal for adding tasks -->
+    <div id="taskModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Add Task</h2>
+            <label for="taskTitle">Task Title:</label>
+            <input type="text" id="taskTitle" placeholder="Enter task title">
+            <button id="saveTask">Save Task</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
     <script>
-        // Fetch user progress data from the backend
-        fetch('/api/progress/1')  // Assuming user ID is 1
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
+        $(document).ready(function() {
+            var selectedDate;
+
+            $('#calendar').fullCalendar({
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'month,agendaWeek,agendaDay'
+                },
+                selectable: true,
+                select: function(start, end) {
+                    selectedDate = start;
+                    $('#taskModal').show();
+                },
+                events: [
+                    {
+                        title: 'Skill Learning Session',
+                        start: '2023-10-10T10:00:00',
+                        end: '2023-10-10T12:00:00'
+                    },
+                    {
+                        title: 'Project Deadline',
+                        start: '2023-10-15'
+                    }
+                ]
+            });
+
+            // Close modal
+            $('.close').on('click', function() {
+                $('#taskModal').hide();
+            });
+
+            // Save task
+            $('#saveTask').on('click', function() {
+                var taskTitle = $('#taskTitle').val();
+                if (taskTitle) {
+                    $('#calendar').fullCalendar('renderEvent', {
+                        title: taskTitle,
+                        start: selectedDate,
+                        allDay: true
+                    });
+                    $('#taskTitle').val('');
+                    $('#taskModal').hide();
+                } else {
+                    alert('Please enter a task title.');
                 }
-                return response.json();
-            })
-            .then(data => {
-                const skills = data.skills;
-                const progress = data.progress;
-
-                // Create the bar chart
-                const ctx = document.getElementById('progressChart').getContext('2d');
-                const progressChart = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: skills,
-                        datasets: [{
-                            label: 'Progress (%)',
-                            data: progress,
-                            backgroundColor: 'rgba(255, 206, 86, 0.8)',
-                            borderColor: 'rgba(255, 206, 86, 1)',
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                max: 100
-                            }
-                        }
-                    }
-                });
-
-                // Sample data for skill distribution
-                const skillDistribution = [30, 20, 15, 25, 10]; // Example distribution
-                const skillLabels = ['Python', 'JavaScript', 'Machine Learning', 'Data Analysis', 'Web Development'];
-
-                // Create the pie chart
-                const ctxPie = document.getElementById('skillDistributionChart').getContext('2d');
-                const skillDistributionChart = new Chart(ctxPie, {
-                    type: 'pie',
-                    data: {
-                        labels: skillLabels,
-                        datasets: [{
-                            label: 'Skill Distribution',
-                            data: skillDistribution,
-                            backgroundColor: [
-                                'rgba(255, 255, 255, 1)',
-                                'rgba(200, 200, 200, 1)',
-                                'rgba(150, 150, 150, 1)',
-                                'rgba(100, 100, 100, 1)',
-                                'rgba(50, 50, 50, 1)'
-                            ],
-                            borderColor: [
-                                'rgba(0, 0, 0, 1)',
-                                'rgba(0, 0, 0, 1)',
-                                'rgba(0, 0, 0, 1)',
-                                'rgba(0, 0, 0, 1)',
-                                'rgba(0, 0, 0, 1)'
-                            ],
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            legend: {
-                                position: 'top',
-                            },
-                            title: {
-                                display: true,
-                                text: 'Skill Distribution'
-                            }
-                        }
-                    }
-                });
-            })
-            .catch(error => console.error('Error fetching progress data:', error));
+            });
+        });
 
         // Fetch user statistics
         fetch('/api/user_statistics/1')
             .then(response => response.json())
             .then(data => {
                 document.querySelector('.statistics').innerHTML = `
-                    <h2>User Statistics</h2>
-                    <p>Total Skills Learned: <strong>${data.total_skills}</strong></p>
-                    <p>Current Streak: <strong>${data.current_streak} days</strong></p>
-                    <p>Next Skill to Learn: <strong>${data.next_skill}</strong></p>
+                    <div class="stat-card">
+                        <h3>Total Skills</h3>
+                        <p>${data.total_skills || 0}</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Total Courses</h3>
+                        <p>${data.total_courses || 0}</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Current Streak</h3>
+                        <p>${data.current_streak || 0} days</p>
+                    </div>
                 `;
             })
             .catch(error => console.error('Error fetching user statistics:', error));
@@ -244,8 +283,8 @@
         fetch('/api/notifications/1')
             .then(response => response.json())
             .then(data => {
-                const notificationsList = document.querySelector('.notifications');
-                notificationsList.innerHTML = data.map(notification => `<div class="notification">${notification}</div>`).join('');
+                const notificationsList = document.querySelector('.notice-board');
+                notificationsList.innerHTML += data.map(notification => `<div class="notification">${notification}</div>`).join('');
             })
             .catch(error => console.error('Error fetching notifications:', error));
     </script>
