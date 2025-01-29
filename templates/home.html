@@ -38,7 +38,7 @@
         }
 
         .profile-icon {
-            display: none; /* Initially hidden */
+            display: inline-block; /* Show profile icon */
             width: 40px; /* Increased size */
             height: 40px; /* Increased size */
             border-radius: 50%; /* Make it circular */
@@ -49,9 +49,109 @@
             cursor: pointer; /* Change cursor to pointer */
         }
 
-        .logout-btn {
+        .action-btn {
             display: none; /* Initially hidden */
-            margin-left: 10px; /* Space between the icon and button */
+            margin-top: 5px; /* Space above the button */
+            background-color: #007bff; /* Blue background */
+            color: white; /* White text */
+            border: none; /* No border */
+            padding: 10px 20px; /* Padding */
+            border-radius: 5px; /* Rounded corners */
+            cursor: pointer; /* Change cursor to pointer */
+        }
+
+        .action-btn:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+        }
+
+        .reminders-streaks-container {
+            display: flex; /* Use flexbox for alignment */
+            justify-content: space-between; /* Space between the cards */
+            align-items: flex-start; /* Align items at the start */
+            margin: 20px; /* Add margin for spacing */
+            flex-wrap: wrap; /* Allow wrapping for responsiveness */
+        }
+
+        .reminders-section,
+        .streaks-section {
+            background-color: rgb(42, 40, 40); 
+            color: black; /* Black text color */
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 20px; /* Add padding */
+            width: 48%; /* Set width to allow both cards to fit */
+            min-width: 300px; /* Set a minimum width for smaller screens */
+            margin: 10px; /* Add margin for spacing */
+            box-sizing: border-box; /* Include padding in width calculation */
+            transition: transform 0.3s ease, box-shadow 0.3s ease; /* Transition for transform and box-shadow */
+        }
+
+        .reminders-section:hover,
+        .streaks-section:hover {
+            transform: translateY(-10px); /* Move up on hover */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Increase shadow on hover */
+        }
+
+        .reminders-section h2,
+        .streaks-section h2 {
+            background-color: #1e1e1e; /* Dark background for the title */
+            color: white; /* White text color for the title */
+            padding: 10px; /* Padding for the title */
+            border-radius: 10px 10px 0 0; /* Rounded corners for the top */
+            margin: -20px -20px 20px -20px; /* Adjust margins to overlap the card */
+        }
+
+        .streak-info {
+            padding: 10px; /* Reduced padding */
+        }
+
+        .streak-days {
+            font-size: 20px; /* Reduced font size */
+            font-weight: bold;
+        }
+
+        .streak-freezes {
+            margin-top: 5px; /* Reduced margin */
+        }
+
+        .streak-days-grid {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .day {
+            width: 30px;
+            height: 30px;
+            border-radius: 5px;
+            margin: 0 5px;
+        }
+
+        .day[data-visited="true"] {
+            background-color: orange; /* Color for visited days */
+        }
+
+        .day[data-visited="false"] {
+            background-color:rgb(252, 252, 252); /* Color for missed days */
+        }
+
+        .day[data-visited="none"] {
+            background-color: #555; /* Color for empty days */
+        }
+
+        .dashboard-btn {
+            display: none; /* Initially hidden */
+            margin-top: 5px; /* Space above the button */
+            background-color: #007bff; /* Blue background */
+            color: white; /* White text */
+            border: none; /* No border */
+            padding: 10px 20px; /* Padding */
+            border-radius: 5px; /* Rounded corners */
+            cursor: pointer; /* Change cursor to pointer */
+        }
+
+        .dashboard-btn:hover {
+            background-color: #0056b3; /* Darker blue on hover */
         }
     </style>
 </head>
@@ -71,8 +171,9 @@
             <a href="/about" class="nav-link"><i class="fas fa-info-circle"></i> About</a>
             <a href="/login" class="nav-link button" id="loginBtn">Login</a>
             <a href="/register" class="nav-link button" id="registerBtn">Sign Up</a>
-            <img src="{{ url_for('static', filename='images/profile.png') }}" alt="Profile" class="profile-icon" id="profileIcon" onclick="toggleLogout()">
-            <button class="logout-btn button" id="logoutBtn" onclick="logout()">Logout</button>
+            <img src="{{ url_for('static', filename='images/profile.png') }}" alt="Profile" class="profile-icon" id="profileIcon" onclick="toggleActions()">
+            <button class="action-btn" id="dashboardBtn" onclick="goToDashboard()">Go to Dashboard</button>
+            <button class="action-btn" id="logoutBtn" onclick="logout()">Logout</button>
         </nav>
     </div>
 
@@ -107,12 +208,34 @@
         </div>
     </section>
 
-    <!-- Reminders Feature Section -->
-    <section id="reminders" class="reminders-section animate-slide-up">
-        <h2>Skill Completion Reminders</h2>
-        <p>We provide reminders for skill completion to help you stay focused on your learning journey. Stay on track and never miss a deadline!</p>
-        <p>Check your email for reminders about your progress and upcoming tasks.</p>
-    </section>
+    <!-- Reminders and Streaks Section -->
+    <div class="reminders-streaks-container">
+        <!-- Reminders Feature Section -->
+        <section id="reminders" class="reminders-section animate-slide-up">
+            <h2>Skill Completion Reminders</h2>
+            <p>We provide reminders for skill completion to help you stay focused on your learning journey. Stay on track and never miss a deadline!</p>
+            <p>Check your email for reminders about your progress and upcoming tasks.</p>
+        </section>
+
+        <!-- Streaks Section -->
+        <section class="streaks-section animate-fade-in">
+            <h2>Your Learning Streak </h2>
+            <div class="streak-info" id="streakCard">
+                <div class="streak-days">0 days strong!</div>
+                <p>Keep learning to maintain your progress!</p>
+                <div class="streak-freezes">Streak freezes left: <span id="streakFreezes">0</span></div>
+            </div>
+            <div class="streak-days-grid" id="streakDaysGrid">
+                <div class="day" data-visited="none"></div>
+                <div class="day" data-visited="none"></div>
+                <div class="day" data-visited="none"></div>
+                <div class="day" data-visited="none"></div>
+                <div class="day" data-visited="none"></div>
+                <div class="day" data-visited="none"></div>
+                <div class="day" data-visited="none"></div>
+            </div>
+        </section>
+    </div>
 
     <!-- Statistics Section -->
     <section class="stats-section animate-fade-in">
@@ -281,6 +404,70 @@
             },
             retina_detect: true
         });
+    </script>
+
+    <script>
+        // Example logic for managing streaks
+        let currentStreak = 0; // Set initial streak to 0
+        let streakFreezes = 0; // Set initial freezes to 0
+        let userVisited = true; // Change this to false to simulate a non-visit
+
+        // Function to update streak display
+        function updateStreakDisplay() {
+            document.querySelector('.streak-days').innerText = `${currentStreak} days strong!`;
+            document.getElementById('streakFreezes').innerText = streakFreezes;
+
+            // Change the card color based on visit status
+            const streakCard = document.getElementById('streakCard');
+            if (userVisited) {
+                streakCard.style.backgroundColor = 'orange'; // Orange for visited
+            } else {
+                streakCard.style.backgroundColor = 'blue'; // Blue for not visited
+            }
+        }
+
+        // Function to update the streak days grid
+        function updateStreakDays(visitedDays) {
+            const daysGrid = document.getElementById('streakDaysGrid');
+            const days = daysGrid.querySelectorAll('.day');
+
+            days.forEach((day, index) => {
+                if (visitedDays[index] === true) {
+                    day.setAttribute('data-visited', 'true');
+                } else if (visitedDays[index] === false) {
+                    day.setAttribute('data-visited', 'false');
+                } else {
+                    day.setAttribute('data-visited', 'none');
+                }
+            });
+        }
+
+        // Simulate user activity for the last week
+        const visitedDays = [false, false, false, false, false, false, false]; // Example data
+        updateStreakDays(visitedDays);
+
+        // Call the function to update the display
+        updateStreakDisplay();
+    </script>
+
+    <script>
+        function toggleActions() {
+            const dashboardBtn = document.getElementById('dashboardBtn');
+            const logoutBtn = document.getElementById('logoutBtn');
+            // Toggle the display of the buttons
+            if (dashboardBtn.style.display === 'none' || dashboardBtn.style.display === '') {
+                dashboardBtn.style.display = 'block'; // Show the dashboard button
+                logoutBtn.style.display = 'block'; // Show the logout button
+            } else {
+                dashboardBtn.style.display = 'none'; // Hide the dashboard button
+                logoutBtn.style.display = 'none'; // Hide the logout button
+            }
+        }
+
+        function goToDashboard() {
+            console.log("Redirecting to dashboard...");
+            window.location.href = '/dashboard';  // Flask route, not file path
+        }
     </script>
 </body>
 </html>

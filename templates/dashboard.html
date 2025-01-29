@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progress Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #121212;
+            color: white;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .card {
+            background-color: #1e1e1e;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px auto; /* Center the card */
+            max-width: 600px; /* Set a maximum width */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+        canvas {
+            max-width: 100%; /* Ensure the chart is responsive */
+            height: auto; /* Maintain aspect ratio */
+        }
+        .skills {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+        .skill {
+            background-color: #007bff;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px;
+            flex: 1 1 30%; /* Flex-grow, flex-shrink, flex-basis */
+            text-align: center;
+            transition: background-color 0.3s, transform 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px; /* Increased font size */
+        }
+        .skill:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+        .skill i {
+            font-size: 24px; /* Set icon size */
+            margin-right: 5px; /* Space between icon and text */
+        }
+        .statistics, .recent-activities, .notifications {
+            margin-top: 20px;
+        }
+        .notification {
+            background-color: #333;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 5px 0;
+        }
+        h2 {
+            font-size: 24px; /* Increased title font size */
+            margin-bottom: 15px; /* Space below title */
+        }
+        ul {
+            list-style-type: none; /* Remove bullet points */
+            padding: 0; /* Remove padding */
+        }
+        li {
+            background-color: #2a2a2a; /* Background for list items */
+            padding: 10px;
+            border-radius: 5px;
+            margin: 5px 0;
+            transition: background-color 0.3s;
+        }
+        li:hover {
+            background-color: #3a3a3a; /* Darker background on hover */
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Your Progress Dashboard</h1>
+    </div>
+
+    <div class="card">
+        <h2>Progress Overview</h2>
+        <canvas id="progressChart" width="400" height="200"></canvas>
+        <canvas id="skillDistributionChart" width="400" height="200"></canvas>
+    </div>
+
+    <div class="card">
+        <h2>Your Skills</h2>
+        <div class="skills">
+            <div class="skill"><i class="fab fa-python"></i> Python</div>
+            <div class="skill"><i class="fab fa-js"></i> JavaScript</div>
+            <div class="skill"><i class="fas fa-robot"></i> Machine Learning</div>
+            <div class="skill"><i class="fas fa-chart-line"></i> Data Analysis</div>
+            <div class="skill"><i class="fas fa-code"></i> Web Development</div>
+            <div class="skill"><i class="fas fa-brain"></i> AI Fundamentals</div>
+        </div>
+    </div>
+
+    <div class="card statistics">
+        <h2>User Statistics</h2>
+        <p>Total Skills Learned: <strong>5</strong></p>
+        <p>Current Streak: <strong>3 days</strong></p>
+        <p>Next Skill to Learn: <strong>Data Visualization</strong></p>
+    </div>
+
+    <div class="card recent-activities">
+        <h2>Recent Activities</h2>
+        <ul>
+            <li>Completed Python Basics Course</li>
+            <li>Started Machine Learning Project</li>
+            <li>Participated in AI Webinar</li>
+        </ul>
+    </div>
+
+    <div class="card notifications">
+        <h2>Notifications</h2>
+        <div class="notification">New course available: Advanced JavaScript!</div>
+        <div class="notification">Reminder: Complete your Data Analysis project by Friday.</div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Fetch user progress data from the backend
+        fetch('/api/progress/1')  // Assuming user ID is 1
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const skills = data.skills;
+                const progress = data.progress;
+
+                // Create the bar chart
+                const ctx = document.getElementById('progressChart').getContext('2d');
+                const progressChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: skills,
+                        datasets: [{
+                            label: 'Progress (%)',
+                            data: progress,
+                            backgroundColor: 'rgba(255, 206, 86, 0.8)',
+                            borderColor: 'rgba(255, 206, 86, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100
+                            }
+                        }
+                    }
+                });
+
+                // Sample data for skill distribution
+                const skillDistribution = [30, 20, 15, 25, 10]; // Example distribution
+                const skillLabels = ['Python', 'JavaScript', 'Machine Learning', 'Data Analysis', 'Web Development'];
+
+                // Create the pie chart
+                const ctxPie = document.getElementById('skillDistributionChart').getContext('2d');
+                const skillDistributionChart = new Chart(ctxPie, {
+                    type: 'pie',
+                    data: {
+                        labels: skillLabels,
+                        datasets: [{
+                            label: 'Skill Distribution',
+                            data: skillDistribution,
+                            backgroundColor: [
+                                'rgba(255, 255, 255, 1)',
+                                'rgba(200, 200, 200, 1)',
+                                'rgba(150, 150, 150, 1)',
+                                'rgba(100, 100, 100, 1)',
+                                'rgba(50, 50, 50, 1)'
+                            ],
+                            borderColor: [
+                                'rgba(0, 0, 0, 1)',
+                                'rgba(0, 0, 0, 1)',
+                                'rgba(0, 0, 0, 1)',
+                                'rgba(0, 0, 0, 1)',
+                                'rgba(0, 0, 0, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            title: {
+                                display: true,
+                                text: 'Skill Distribution'
+                            }
+                        }
+                    }
+                });
+            })
+            .catch(error => console.error('Error fetching progress data:', error));
+
+        // Fetch user statistics
+        fetch('/api/user_statistics/1')
+            .then(response => response.json())
+            .then(data => {
+                document.querySelector('.statistics').innerHTML = `
+                    <h2>User Statistics</h2>
+                    <p>Total Skills Learned: <strong>${data.total_skills}</strong></p>
+                    <p>Current Streak: <strong>${data.current_streak} days</strong></p>
+                    <p>Next Skill to Learn: <strong>${data.next_skill}</strong></p>
+                `;
+            })
+            .catch(error => console.error('Error fetching user statistics:', error));
+
+        // Fetch recent activities
+        fetch('/api/recent_activities/1')
+            .then(response => response.json())
+            .then(data => {
+                const activitiesList = document.querySelector('.recent-activities ul');
+                activitiesList.innerHTML = data.map(activity => `<li>${activity}</li>`).join('');
+            })
+            .catch(error => console.error('Error fetching recent activities:', error));
+
+        // Fetch notifications
+        fetch('/api/notifications/1')
+            .then(response => response.json())
+            .then(data => {
+                const notificationsList = document.querySelector('.notifications');
+                notificationsList.innerHTML = data.map(notification => `<div class="notification">${notification}</div>`).join('');
+            })
+            .catch(error => console.error('Error fetching notifications:', error));
+    </script>
+</body>
+</html>

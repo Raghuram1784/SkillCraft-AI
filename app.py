@@ -3094,5 +3094,38 @@ def profile():
         return redirect('/')  # Redirect to home if not logged in
     return render_template('home.html')  # Render the profile page
 
+@app.route('/dashboard')
+def dashboard():
+    return render_template('dashboard.html')
+
+@app.route('/api/user_statistics/<int:user_id>')
+def user_statistics(user_id):
+    # Fetch user statistics from the database
+    statistics = {
+        "total_skills": 5,
+        "current_streak": 3,
+        "next_skill": "Data Visualization"
+    }
+    return jsonify(statistics)
+
+@app.route('/api/recent_activities/<int:user_id>')
+def recent_activities(user_id):
+    # Fetch recent activities from the database
+    activities = [
+        "Completed Python Basics Course",
+        "Started Machine Learning Project",
+        "Participated in AI Webinar"
+    ]
+    return jsonify(activities)
+
+@app.route('/api/notifications/<int:user_id>')
+def notifications(user_id):
+    # Fetch notifications from the database
+    notifications = [
+        "New course available: Advanced JavaScript!",
+        "Reminder: Complete your Data Analysis project by Friday."
+    ]
+    return jsonify(notifications)
+
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
