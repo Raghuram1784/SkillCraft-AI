@@ -173,10 +173,11 @@
     <div class="card recent-activities">
         <h2>Recent Activities</h2>
         <ul>
-            <li>Completed Python Basics Course</li>
-            <li>Started Machine Learning Project</li>
-            <li>Participated in AI Webinar</li>
+            <li>Visited Python Basics Course</li>
+            <li>Visited Machine Learning Project</li>
+            <li>Visited AI Webinar</li>
         </ul>
+        <p>We encourage you to start your main courses to enhance your skills!</p>
     </div>
 
     <div class="card notice-board">
@@ -256,15 +257,15 @@
                 document.querySelector('.statistics').innerHTML = `
                     <div class="stat-card">
                         <h3>Total Skills</h3>
-                        <p>${data.total_skills || 0}</p>
+                        <p>0</p>
                     </div>
                     <div class="stat-card">
                         <h3>Total Courses</h3>
-                        <p>${data.total_courses || 0}</p>
+                        <p>0</p>
                     </div>
                     <div class="stat-card">
                         <h3>Current Streak</h3>
-                        <p>${data.current_streak || 0} days</p>
+                        <p>${data.current_streak} days</p>
                     </div>
                 `;
             })
