@@ -14,66 +14,22 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from flask_mail import Mail, Message  # Add at top with other imports if not already there
 from flask import Flask, render_template, request, redirect, flash
-# from flask_mysqldb import MySQL
-# import requests
-
-# app = Flask(__name__)
-# app.secret_key = 'your_secret_key'
-
-# # MySQL Configuration
-# app.config['MYSQL_HOST'] = 'localhost'
-# app.config['MYSQL_USER'] = 'root'
-# app.config['MYSQL_PASSWORD'] = 'root'
-# app.config['MYSQL_DB'] = 'user_registration'
-
-# mysql = MySQL(app)
-
-# def send_email_to_admin(name, email):
-#     url = "http://localhost:3001/send-email"  # Node.js email service
-#     data = {"name": name, "email": email}
-#     try:
-#         response = requests.post(url, json=data)
-#         if response.status_code == 200:
-#             print("Email sent successfully!")
-#         else:
-#             print("Failed to send email:", response.text)
-#     except Exception as e:
-#         print("Error:", e)
-
-# @app.route('/register', methods=['GET', 'POST'])
-# def register():
-#     if request.method == 'POST':
-#         name = request.form['full_name']
-#         email = request.form['email']
-#         password = request.form['password']
-
-#         # Insert user data into MySQL
-#         cur = mysql.connection.cursor()
-#         cur.execute("INSERT INTO users (full_name, email, password) VALUES (%s, %s, %s)", (name, email, password))
-#         mysql.connection.commit()
-#         cur.close()
-
-#         # Send email notification to admin
-#         send_email_to_admin(name, email)
-
-#         flash('Registration successful!', 'success')
-#         return redirect('/home')  # Redirect after registration
-
-#     return render_template('register.html')
-
-# @app.route('/home')
-# def home():
-#     return render_template('home.html')
-
-# if __name__ == '__main__':
-#     app.run(debug=True)
-
-
-
-
+from flask_sqlalchemy import SQLAlchemy
+from models import db
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'  # Set a secret key for session management
+
+# Database Configuration
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///skillcraft.db'  # Using SQLite for development
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SECRET_KEY'] = 'your-secret-key'  # Change this to a secure secret key
+
+# Initialize database
+db.init_app(app)
+
+# Create database tables
+with app.app_context():
+    db.create_all()
 
 # Initialize Mail after creating Flask app
 mail = Mail(app)
@@ -83,7 +39,7 @@ app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USERNAME'] = 'aiskillcraft@gmail.com'
-app.config['MAIL_PASSWORD'] = 'mzcm fscn hawx dzhm'  # Your new App Password
+app.config['MAIL_PASSWORD'] = 'mzcm fscn hawx dzhm'
 app.config['MAIL_DEFAULT_SENDER'] = 'aiskillcraft@gmail.com'
 
 # Skills data
@@ -3083,10 +3039,41 @@ def send_reminder_emails():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        # Handle registration logic here
-        session['logged_in'] = True  # Set the session variable
-        return redirect('/profile')  # Redirect to profile page after registration
-    return render_template('register.html')  # Render the registration page for GET requests
+        try:
+            # Get user data from form
+            user_data = {
+                'username': request.form.get('username'),
+                'email': request.form.get('email'),
+                'password': request.form.get('password')
+            }
+            
+            # Create new user
+            new_user = User(
+                username=user_data['username'],
+                email=user_data['email']
+            )
+            new_user.set_password(user_data['password'])
+            
+            # Add to database
+            db.session.add(new_user)
+            db.session.commit()
+            
+            # Send notification email
+            send_registration_notification(user_data)
+            
+            # Set session
+            session['logged_in'] = True
+            session['user_id'] = new_user.id
+            
+            flash('Registration successful!', 'success')
+            return redirect('/dashboard')
+            
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Registration failed: {str(e)}', 'error')
+            return redirect('/register')
+            
+    return render_template('register.html')
 
 @app.route('/profile')
 def profile():
@@ -3126,6 +3113,32 @@ def notifications(user_id):
         "Reminder: Complete your Data Analysis project by Friday."
     ]
     return jsonify(notifications)
+
+# Add this function for registration notification
+def send_registration_notification(user_data):
+    try:
+        msg = Message(
+            'New User Registration - AI Skill Learning Platform',
+            sender='aiskillcraft@gmail.com',
+            recipients=['aiskillcraft@gmail.com']
+        )
+        
+        msg.body = f"""
+        New User Registration Details:
+        
+        Username: {user_data.get('username')}
+        Email: {user_data.get('email')}
+        Registration Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+        
+        This is an automated notification from the AI Skill Learning Platform.
+        """
+        
+        mail.send(msg)
+        print(f"Registration notification sent successfully")  # Debug log
+        return True
+    except Exception as e:
+        print(f"Email Error: {str(e)}")  # Debug log
+        return False
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
