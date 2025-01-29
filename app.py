@@ -15,7 +15,7 @@ from email.mime.multipart import MIMEMultipart
 from flask_mail import Mail, Message  # Add at top with other imports if not already there
 from flask import Flask, render_template, request, redirect, flash
 from flask_sqlalchemy import SQLAlchemy
-from models import db
+from models import db, User
 
 app = Flask(__name__)
 

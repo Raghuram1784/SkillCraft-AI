@@ -5,8 +5,143 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Roadmap for {{ skill['Skill Name'] }}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        /* Enhanced styles for roadmap.html */
+        .roadmap-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            background: linear-gradient(90deg, #4776E6, #8E54E9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .skill-info {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .info-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+            transition: transform 0.3s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .learning-path-section {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .learning-steps li {
+            background: rgba(255, 255, 255, 0.08);
+            margin-bottom: 1.5rem;
+            border-left: 4px solid #4776E6;
+            animation: slideIn 0.5s ease-out forwards;
+            opacity: 0;
+        }
+
+        .learning-steps li:nth-child(odd) {
+            border-left-color: #8E54E9;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .start-btn {
+            background: linear-gradient(45deg, #4776E6, #8E54E9);
+            box-shadow: 0 4px 15px rgba(71, 118, 230, 0.2);
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .start-btn:hover {
+            background: linear-gradient(45deg, #5685f0, #9a66f3);
+        }
+
+        .flowchart-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+        }
+
+        .flowchart-controls {
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .zoom-button {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(90deg, #4776E6, #8E54E9);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .zoom-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(71, 118, 230, 0.2);
+        }
+
+        .flowchart-container {
+            overflow: hidden;
+            border-radius: 10px;
+            margin: 1rem 0;
+        }
+
+        .flowchart-image {
+            width: 100%;
+            height: auto;
+            transition: transform 0.3s ease;
+        }
+
+        #particles-js {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+    </style>
 </head>
 <body>
+    <div id="particles-js"></div>
     <div class="roadmap-container">
         <h1>Roadmap for {{ skill['Skill Name'] }}</h1>
         <p><strong>Domain:</strong> {{ skill['Domain'] }}</p>
@@ -44,7 +179,68 @@
         <button id="start-learning-btn" class="start-btn">Start Learning</button>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script>
+        // Particles configuration
+        particlesJS('particles-js',
+        {
+            "particles": {
+                "number": {
+                    "value": 80,
+                    "density": {
+                        "enable": true,
+                        "value_area": 800
+                    }
+                },
+                "color": {
+                    "value": "#4776E6"
+                },
+                "shape": {
+                    "type": "circle"
+                },
+                "opacity": {
+                    "value": 0.5,
+                    "random": false
+                },
+                "size": {
+                    "value": 3,
+                    "random": true
+                },
+                "line_linked": {
+                    "enable": true,
+                    "distance": 150,
+                    "color": "#4776E6",
+                    "opacity": 0.4,
+                    "width": 1
+                },
+                "move": {
+                    "enable": true,
+                    "speed": 6,
+                    "direction": "none",
+                    "random": false,
+                    "straight": false,
+                    "out_mode": "out",
+                    "bounce": false
+                }
+            },
+            "interactivity": {
+                "detect_on": "canvas",
+                "events": {
+                    "onhover": {
+                        "enable": true,
+                        "mode": "repulse"
+                    },
+                    "onclick": {
+                        "enable": true,
+                        "mode": "push"
+                    },
+                    "resize": true
+                }
+            },
+            "retina_detect": true
+        });
+
+        // Existing zoom functionality
         let scale = 1;
         const flowchart = document.getElementById('flowchart');
         
@@ -67,6 +263,5 @@
             window.location.href = "/start-learning/{{ skill['Skill Name'] }}";
         });
     </script>
-    
 </body>
 </html>
