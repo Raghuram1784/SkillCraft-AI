@@ -36,8 +36,7 @@ SkillCraft AI is an **innovative learning platform** developed using **Python (F
 ## Usage  
 To explore SkillCraft AI:  
 1. Run the Flask application by executing `python app.py` in your terminal.  
-2. Open a web browser and visit `http://127.0.0.1:5000/` to view the application.  
-3. Enjoy the interactive features and explore the learning resources and tools.
+2. Enjoy the interactive features and explore the learning resources and tools.
 
 ## Installation  
 To set up SkillCraft AI locally:  
