@@ -221,12 +221,12 @@
         }
 
         /* Updated tooltip styles */
-        .rating-tooltip {
+        /*.rating-tooltip {
             position: relative;
             display: inline-block;
-        }
+        }*/
 
-        .tooltip-content {
+        /*.tooltip-content {
             display: none;
             position: absolute;
             background: rgba(35, 35, 35, 0.95);
@@ -246,7 +246,7 @@
 
         .rating-value:hover .tooltip-content {
             display: block;
-        }
+        } */
 
         /* Responsive adjustments */
         @media (max-width: 1800px) {
@@ -316,7 +316,7 @@
                 </span>
                 <span class="rating-value">
                     {{ "%.1f"|format(skill[1]['Rating']) }}/5
-                    <span class="rating-tooltip">
+                    <!-- <span class="rating-tooltip">
                         <div class="tooltip-content">
                             Ensemble-based rating considering:
                             - Complexity
@@ -324,7 +324,7 @@
                             - Learning Curve
                             - Resource Availability
                         </div>
-                    </span>
+                    </span> -->
                 </span>
             </div>
             <div class="skill-info">
