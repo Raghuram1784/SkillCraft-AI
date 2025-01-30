@@ -12,11 +12,26 @@ SkillCraft AI is an **innovative learning platform** developed using **Python (F
 - **Interactive Design**: Visually engaging layout with smooth animations and transitions.
 
 ## Application Screenshots  
- - ![SkillCraft-1](SkillCraft-AI/Application-Screenshots/SkillCraft-1.png)
- - ![SkillCraft-2](SkillCraft-AI/Application-Screenshots/SkillCraft-2.png)
- - ![SkillCraft-3](SkillCraft-AI/Application-Screenshots/SkillCraft-3.png)
- - ![SkillCraft-4](SkillCraft-AI/Application-Screenshots/SkillCraft-4.png)
- - ![SkillCraft-5](SkillCraft-AI/Application-Screenshots/SkillCraft-5.png)
+ - ![SkillCraft-1](Application-Screenshots/SkillCraft-1.png)
+ - ![SkillCraft-2](Application-Screenshots/SkillCraft-2.png)
+ - ![SkillCraft-2](Application-Screenshots/SkillCraft-3.png)
+ - ![SkillCraft-2](Application-Screenshots/SkillCraft-4.png)
+ - ![SkillCraft-2](Application-Screenshots/SkillCraft-5.png)
+ - ![SkillCraft-2](Application-Screenshots/SkillCraft-6.png)
+ - ![SkillCraft-2](Application-Screenshots/SkillCraft-7.png)
+ - ![SkillCraft-2](Application-Screenshots/SkillCraft-8.png)
+ - ![SkillCraft-2](Application-Screenshots/SkillCraft-9.png)
+ - ![SkillCraft-2](Application-Screenshots/SkillCraft-10.png)
+ - ![SkillCraft-2](Application-Screenshots/SkillCraft-11.png)
+ - ![SkillCraft-2](Application-Screenshots/SkillCraft-12.png)
+ - ![SkillCraft-2](Application-Screenshots/SkillCraft-13.png)
+ - ![SkillCraft-2](Application-Screenshots/SkillCraft-14.png)
+ - ![SkillCraft-2](Application-Screenshots/SkillCraft-15.png)
+ - ![SkillCraft-2](Application-Screenshots/SkillCraft-16.png)
+ - ![SkillCraft-2](Application-Screenshots/SkillCraft-17.png)
+ - ![SkillCraft-2](Application-Screenshots/SkillCraft-18.png)
+ - ![SkillCraft-2](Application-Screenshots/SkillCraft-19.png)
+ - ![SkillCraft-2](Application-Screenshots/SkillCraft-20.png)
 
 ## Usage  
 To explore SkillCraft AI:  
