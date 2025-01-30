@@ -33,3 +33,11 @@ To set up SkillCraft AI locally:
    - pip install -r requirements.txt
 3. Run the Flask application:
    - python app.py
+
+ ## Technologies Used
+- **Python (Flask)**: Backend development and API handling.
+- **HTML**: Structure of the web pages.
+- **CSS**: Styling and responsiveness.
+- **JavaScript**: For animations and interactive features.
+- **AOS**: Animations on scroll for enhanced user experience.
+- **Particles.js**: Visual background effects for engaging design.
