@@ -6,6 +6,7 @@
     <title>Register - SkillCraft AI</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/brain-logo.png') }}">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -117,12 +118,21 @@
         a:hover {
             color: #64ffda; /* Change color on hover for better visibility */
         }
+
+        .flash-message {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: #64ffda;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            animation: fadeIn 0.5s;
+        }
     </style>
 </head>
 <body>
     <div class="register-container">
         <h2>Register for SkillCraft AI</h2>
-        <form id="registerForm" method="POST" action="/register">
+        <form id="registerForm" method="POST" action="/" onsubmit="return handleRegister(event)">
             <div class="input-container">
                 <input type="text" name="full_name" placeholder="Full Name" required>
             </div>
@@ -152,6 +162,30 @@
                 toggleIcon.classList.remove('fa-eye-slash');
                 toggleIcon.classList.add('fa-eye');
             }
+        }
+
+        function handleRegister(event) {
+            event.preventDefault(); // Prevent default form submission
+            
+            // Get form data
+            const formData = new FormData(document.getElementById('registerForm'));
+            
+            // Submit form data
+            fetch('/register', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Redirect to home page on successful registration
+                    window.location.href = '/';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
+            return false;
         }
     </script>
 </body>

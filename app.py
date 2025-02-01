@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, request, redirect, session
+from flask import Flask, render_template, jsonify, request, redirect, session, url_for, flash
 import networkx as nx
 import matplotlib
 matplotlib.use('Agg')
@@ -16,6 +16,7 @@ from flask_mail import Mail, Message  # Add at top with other imports if not alr
 from flask import Flask, render_template, request, redirect, flash
 from flask_sqlalchemy import SQLAlchemy
 from models import db, User
+from werkzeug.security import generate_password_hash
 
 app = Flask(__name__)
 
@@ -119,10 +120,9 @@ skills_data['Formatted Duration'] = skills_data['Duration (hours)'].apply(format
 
 # Add routes for all pages
 @app.route('/')
+@app.route('/home')
 def home():
-    if 'logged_in' in session:
-        return render_template('home.html')  # Render your existing home page if logged in
-    return redirect('/login')  # Redirect to login if not logged in
+    return render_template('home.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -3040,39 +3040,41 @@ def send_reminder_emails():
 def register():
     if request.method == 'POST':
         try:
-            # Get user data from form
-            user_data = {
-                'username': request.form.get('username'),
-                'email': request.form.get('email'),
-                'password': request.form.get('password')
-            }
-            
+            # Get form data
+            full_name = request.form.get('full_name')
+            email = request.form.get('email')
+            password = request.form.get('password')
+
+            # Check if user already exists
+            existing_user = User.query.filter_by(email=email).first()
+            if existing_user:
+                flash('Email already registered. Please login.')
+                return redirect('/')  # Redirect to home page
+
             # Create new user
+            hashed_password = generate_password_hash(password)
             new_user = User(
-                username=user_data['username'],
-                email=user_data['email']
+                full_name=full_name,
+                email=email,
+                password=hashed_password
             )
-            new_user.set_password(user_data['password'])
             
-            # Add to database
             db.session.add(new_user)
             db.session.commit()
-            
-            # Send notification email
-            send_registration_notification(user_data)
-            
-            # Set session
+
+            # Set session variables to indicate user is logged in
             session['logged_in'] = True
-            session['user_id'] = new_user.id
+            session['user_email'] = email
             
-            flash('Registration successful!', 'success')
-            return redirect('/dashboard')
-            
+            # Redirect to home page after successful registration
+            return redirect('/')  # Direct redirect to home page
+
         except Exception as e:
-            db.session.rollback()
-            flash(f'Registration failed: {str(e)}', 'error')
+            print(f"Registration error: {str(e)}")  # For debugging
+            flash('An error occurred during registration. Please try again.')
             return redirect('/register')
-            
+
+    # If GET request, render the registration page
     return render_template('register.html')
 
 @app.route('/profile')

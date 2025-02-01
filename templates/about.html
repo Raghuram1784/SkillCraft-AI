@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- Add this line for favicon -->
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/brain-logo.png') }}">
+    <!-- ... rest of your head content ... -->
     <style>
         /* Enhanced styles for about.html */
         .content-card {
@@ -27,11 +30,11 @@
         .glowing-text {
             font-size: 3rem;
             background: linear-gradient(90deg, #4776E6, #8E54E9);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: transparent; 
+            background-clip: text; 
+            -webkit-background-clip: text; 
             margin-bottom: 1rem;
         }
-
         .features-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -39,12 +42,13 @@
             margin: 3rem 0;
         }
 
-        .feature-card {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
-            padding: 2rem;
-            text-align: center;
-            transition: all 0.3s ease;
+        .feature-card i {
+            font-size: 2.5rem;
+            background: linear-gradient(45deg, #4776E6, #8E54E9);
+            color: transparent; 
+            background-clip: text; 
+            -webkit-background-clip: text;
+            margin-bottom: 1rem;
         }
 
         .feature-card:hover {
