@@ -11,6 +11,19 @@ SkillCraft AI is an **innovative learning platform** developed using **Python (F
 - **Curated Resources**: Hand-picked educational materials for enhanced learning.  
 - **Interactive Design**: Visually engaging layout with smooth animations and transitions.
 
+## How to Use SkillCraft AI  
+
+1. **Register/Login**: Create an account or log in to access the platform.  
+2. **Explore the Homepage**:  
+   - View the **Skill Reminders** section to keep track of your learning.  
+   - Check your **streak progress** to stay motivated.  
+   - Discover **technologies you will gain** expertise in.  
+3. **Start Learning**:  
+   - Click on the **Learn Skill** section.  
+   - Open any of the skill cards (e.g., **Backend Development** and **Web Development**).  
+   - Explore the detailed **roadmap** for each skill.  
+   - Access **documentation**, **video tutorials**, and **practice projects** for hands-on learning.  
+4. **Track Progress**: View your learning statistics and receive personalized reminders to stay on track.  
 
 
 ## Application Screenshots  
