@@ -11,6 +11,8 @@ SkillCraft AI is an **innovative learning platform** developed using **Python (F
 - **Curated Resources**: Hand-picked educational materials for enhanced learning.  
 - **Interactive Design**: Visually engaging layout with smooth animations and transitions.
 
+
+
 ## Application Screenshots  
  - ![SkillCraft-1](Application-Screenshots/SkillCraft-1.png)
  - ![SkillCraft-2](Application-Screenshots/SkillCraft-2.png)
